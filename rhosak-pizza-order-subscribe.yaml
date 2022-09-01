@@ -1,0 +1,72 @@
+asyncapi: '2.4.0'
+id: 'urn:com.github.ddoyle.rhosak.pizza'
+info:
+  title: RHOSAK Pizza Party
+  description: Making some pizza
+  version: 1.0.0
+  contact:
+    name: Duncan
+    email: ddoyle@redhat.com
+    url: https://github.com/DuncanDoyle/rhosak-pizza-order-async-api-demo
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  production:
+    url: samurai-pi-cc-fje-rt-kc--diumtg.bf2.kafka.rhcloud.com:443
+    # We're using SASL/PLAIN authentication with protocol SASL_SSL
+    protocol: kafka-secure
+    #ddoyle: Not sure where this protocolVersion comes from or is defined ...
+    protocolVersion: '1.0.0'
+    security:
+      - pizzaSecurity: []
+  development:
+    url: localhost:9092
+    protocol: kafka
+    protocolVersion: '1.0.0'
+defaultContentType: application/json
+channels:
+  # Name of the Kafka Topic
+  pizza-order:
+    description: Pizza order channel
+    subscribe:
+      # ddoyle: I assume this info is used in the generated client, as a topic does not provide operations ...
+      operationId: orderPizza
+      description: Order a pizza
+      tags:
+        - name: pizza
+      bindings:
+        kafka:
+          groupId: 
+            type: string
+            enum: ['pizza-order-subscriber']
+          #clientId:
+          #  type: string
+          #  enum: ['myClientId']
+      message:
+        $ref: '#/components/messages/PizzaOrder'
+components:
+  securitySchemes:
+    pizzaSecurity:
+      type: plain
+  messages:
+    PizzaOrder:
+      name: pizza-order
+      title: Pizza Order
+      description: Pizza margherita data
+      payload: 
+        $ref: "#/components/schemas/pizza"
+      examples:
+        - payload:
+            pizzaType: "Margherita"
+        - payload:
+            pizzaType: "proscuitto-e-funghi"
+  schemas: 
+      pizza: 
+        type: object
+        properties: 
+          pizzaType:
+            type: string
+tags:
+  - name: sensor
+    description: Factory sensors
