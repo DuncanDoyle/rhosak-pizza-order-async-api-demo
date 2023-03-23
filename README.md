@@ -7,9 +7,9 @@
 rhoas kafka create --name samurai-pizza-kafkas --provider aws --region eu-west-1
 ```
 
-2. Create a Service Account
+2. Create a Service Account. Note that this saves the service account's client-id and client-secret in the `pizza-sa-secret.json` file on your local filesystem. Make sure to store the secret in a safe place.
 ```
-rhoas service-account bla bla
+rhoas service-account create --short-description=pizza-service-account --file-format json --output-file pizza-sa-secret.json --overwrite
 ```
 
 3. Create a topic named `pizza-order`:
