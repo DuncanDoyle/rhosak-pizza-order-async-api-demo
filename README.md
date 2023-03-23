@@ -42,7 +42,7 @@ rhoas kafka acl grant-access --consumer --service-account $clientID --topic pizz
 ## Generating the Java consumer for "pizza-order" topic
 
 ```
-ag rhosak-pizza-subscribe-with-schema.yaml @asyncapi/java-template -o generated-java --force-write -p server=production
+ag rhosak-pizza-order-subscribe.yaml @asyncapi/java-template -o generated-java --force-write -p server=production
 ```
 
 NOTE: that this automatically picks up the security scheme and configures SASL_SSL & PLAIN
