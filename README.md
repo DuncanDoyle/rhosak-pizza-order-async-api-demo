@@ -2,21 +2,28 @@
 
 ## Setting up OpenShift Streams for Apache Kafka
 
-1. Create the Kafka instance
+1. Create the Kafka instance:
 ```
 rhoas kafka create --name samurai-pizza-kafkas --provider aws --region eu-west-1
 ```
 
-2. Create a Service Account. Note that this saves the service account's client-id and client-secret in the `pizza-sa-secret.json` file on your local filesystem. Make sure to store the secret in a safe place.
+2. Set the created Kafka instance in the current context of the `rhoas` CLI:
+```
+rhoas kafka use
+```
+Select your `samurai-pizza-kafkas` instance.
+
+3. Create a Service Account. Note that this saves the service account's client-id and client-secret in the `pizza-sa-secret.json` file on your local filesystem. Make sure to store the secret in a safe place:
 ```
 rhoas service-account create --short-description=pizza-service-account --file-format json --output-file pizza-sa-secret.json --overwrite
 ```
 
-3. Create a topic named `pizza-order`:
+4. Create a topic named `pizza-order`:
 ```
 rhoas kafka topic create --name pizza-order --partitions 10
 ```
-4. Set the ACLs to allow the service account to consume from the newly created topic:
+
+5. Set the ACLs to allow the service account to consume from the newly created topic:
 ```
 rhoas kafka acl grant-access --consumer --service-account $USER --topic pizza-order --group pizza-order-subscriber
 ```
