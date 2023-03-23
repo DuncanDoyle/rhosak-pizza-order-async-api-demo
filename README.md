@@ -13,19 +13,24 @@ rhoas kafka use
 ```
 Select your `samurai-pizza-kafkas` instance.
 
-3. Create a Service Account. Note that this saves the service account's client-id and client-secret in the `pizza-sa-secret.json` file on your local filesystem. Make sure to store the secret in a safe place:
-```
-rhoas service-account create --short-description=pizza-service-account --file-format json --output-file pizza-sa-secret.json --overwrite
-```
-
-4. Create a topic named `pizza-order`:
+3. Create a topic named `pizza-order`:
 ```
 rhoas kafka topic create --name pizza-order --partitions 10
 ```
 
-5. Set the ACLs to allow the service account to consume from the newly created topic:
+4. Create a Service Account. Note that this saves the service account's client-id and client-secret in the `pizza-sa-secret.json` file on your local filesystem. Make sure to store the secret in a safe place:
 ```
-rhoas kafka acl grant-access --consumer --service-account $USER --topic pizza-order --group pizza-order-subscriber
+rhoas service-account create --short-description=pizza-service-account --file-format json --output-file pizza-sa-secret.json --overwrite
+```
+
+5. Export the `clientID` in the `pizza-sa-secret.json` to an environment variable (we will):
+```
+read -r clientID <<<$(cat pizza-sa-secret.json | jq -r '.clientID')
+```
+
+6. Set the ACLs to allow the service account to consume from the newly created topic:
+```
+rhoas kafka acl grant-access --consumer --service-account $clientID --topic pizza-order --group pizza-order-subscriber
 ```
 
 ## Install AsyncAPI tooling
